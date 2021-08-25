@@ -2,7 +2,7 @@ import useFetch from "../hooks/useFetch";
 import { useRef, useState } from "react";
 import { useHistory } from "react-router";
 export default function CreateWord() {
-  const days = useFetch("http://localhost:3001/days");
+  const days = useFetch("https://reactprojectbyqwerty.herokuapp.com/days");
   const history = useHistory();
   const [isLoading, setIsLoading] = useState(false);
 
@@ -10,7 +10,7 @@ export default function CreateWord() {
     e.preventDefault();
     if (!isLoading) {
       setIsLoading(true);
-      fetch(`http://localhost:3001/words/`, {
+      fetch(`https://reactprojectbyqwerty.herokuapp.com/words/`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
