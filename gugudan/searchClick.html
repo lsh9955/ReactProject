@@ -5,14 +5,101 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Document</title>
+
     <script crossorigin src="https://unpkg.com/react@16/umd/react.development.js"></script>
     <script crossorigin src="https://unpkg.com/react-dom@16/umd/react-dom.development.js"></script>
     <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
   </head>
-  <body>
-    <div id="root"></div>
-    <script type="text/babel"></script>
 
-    <script type="text/babel"></script>
+  <body>
+    <style>
+      #postTitle {
+        display: inline-block;
+        width: 100px;
+        height: 100px;
+        background-color: sandybrown;
+        margin: 10px 10px 10px 10px;
+        text-align: center;
+        font-size: 20px;
+      }
+    </style>
+    <div id="root"></div>
+    <script type="text/babel">
+      const postList = ["과학", "식품", "음악", "방송", "패션"];
+      const mouseTime = {};
+      class Post extends React.Component {
+        constructor(props) {
+          super(props);
+          this.state = {
+            title: props.thisTitle,
+            index: props.thisIndex,
+            userClicked: 0,
+            onMouseTime: 0,
+          };
+        }
+
+        onClick = (e) => {
+          this.state.userClicked++;
+          console.log(this.state.userClicked);
+        };
+        onMouseOver = (e) => {
+          this.state.onMouseTime = new Date();
+        };
+        onMouseOut = (e) => {
+          let outTime = new Date();
+
+          this.state.onMouseTime = outTime.getSeconds() - this.state.onMouseTime.getSeconds();
+          mouseTime[`${this.state.title}`] === undefined ? (mouseTime[`${this.state.title}`] = this.state.onMouseTime) : (mouseTime[`${this.state.title}`] += this.state.onMouseTime);
+          console.log(mouseTime);
+        };
+
+        render() {
+          return (
+            <React.Fragment>
+              <span onMouseOver={this.onMouseOver} onMouseOut={this.onMouseOut} onClick={this.onClick} id="postTitle">
+                {this.state.title}
+              </span>
+            </React.Fragment>
+          );
+        }
+      }
+    </script>
+    <div id="analysis"></div>
+    <script type="text/babel">
+      class Analysis extends React.Component {
+        constructor(props) {
+
+          super(props);
+          this.state = {
+            count: 0,
+            appear: false,
+            info: [...props.text],
+          };
+        }
+        appearClick = (e) => {
+          this.setState(appear : `${this.state.appear === true ? false : true}`)
+        };
+        render() {
+          return (
+            <React.Fragment>
+              <div onClick={this.appearClick}>사용자 선호도 분석</div>
+              <div>{this.state.info}</div>
+            </React.Fragment>
+          );
+        }
+      }
+    </script>
+
+    <script type="text/babel">
+      ReactDOM.render(
+        postList.map((v, i) => {
+          return <Post thisTitle={v} thisIndex={i} key={i} />;
+        }),
+        document.querySelector("#root")
+      );
+    </script>
+    <script type="text/babel">
+      ReactDOM.render(<Analysis text={mouseTime} />, document.querySelector("#analysis"));
+    </script>
   </body>
 </html>
