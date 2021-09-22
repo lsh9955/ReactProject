@@ -25,11 +25,15 @@
     </style>
     <div id="root"></div>
     <script type="text/babel">
-      const postList = ["과학", "식품", "음악", "방송", "패션"];
+      const postList = ["테크", "식품", "음악", "방송", "패션"];
+      const ads = ["은하수와 사과 합병!", "3초 집밥 키트", "모 걸그룹 디스전...", "유한도전 다시 시작?", "올 겨울은 드레스 패딩 유행 예상"];
       const mouseTime = {};
+      let inTime = 0;
+
       class Post extends React.Component {
         constructor(props) {
           super(props);
+
           this.state = {
             title: props.thisTitle,
             index: props.thisIndex,
@@ -39,18 +43,23 @@
         }
 
         onClick = (e) => {
-          this.state.userClicked++;
-          console.log(this.state.userClicked);
+          //괄호 표시해야함 ({userClicked: before.userClicked + 1,})
+          this.setState((before, now) => ({
+            userClicked: before.userClicked + 1,
+          }));
         };
+
         onMouseOver = (e) => {
-          this.state.onMouseTime = new Date();
+          inTime = new Date();
         };
         onMouseOut = (e) => {
-          let outTime = new Date();
+          let nowTime = new Date();
 
-          this.state.onMouseTime = outTime.getSeconds() - this.state.onMouseTime.getSeconds();
-          mouseTime[`${this.state.title}`] === undefined ? (mouseTime[`${this.state.title}`] = this.state.onMouseTime) : (mouseTime[`${this.state.title}`] += this.state.onMouseTime);
-          console.log(mouseTime);
+          this.setState((before, after) => ({
+            onMouseTime: before.onMouseTime + (nowTime.getMinutes() - inTime.getMinutes()) * 60 + nowTime.getSeconds() - inTime.getSeconds(),
+          }));
+
+          mouseTime[`${this.state.title}`] = this.state.onMouseTime;
         };
 
         render() {
@@ -68,17 +77,21 @@
     <script type="text/babel">
       class Analysis extends React.Component {
         constructor(props) {
-
           super(props);
-          this.state = {
-            count: 0,
+          props.text = this.state = {
+            info: 1,
             appear: false,
-            info: [...props.text],
           };
         }
-        appearClick = (e) => {
-          this.setState(appear : `${this.state.appear === true ? false : true}`)
-        };
+        componentDidMount() {
+          this.setState((prevState) => {
+            console.log(prevState);
+            return {
+              info: prevState.info + 1,
+            };
+          });
+        }
+
         render() {
           return (
             <React.Fragment>
