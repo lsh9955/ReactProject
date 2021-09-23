@@ -13,6 +13,14 @@
 
   <body>
     <style>
+      body {
+        -webkit-touch-callout: none;
+        -webkit-user-select: none;
+        -khtml-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+      }
       #post {
         display: inline-block;
         width: 100px;
@@ -38,14 +46,30 @@
         text-align: center;
         font-size: 15px;
       }
+      #divideBar {
+        font-style: oblique;
+        font-weight: bolder;
+      }
     </style>
     <div id="root"></div>
     <script type="text/babel">
       const postList = ["테크", "식품", "음악", "방송", "패션"];
       const ads = ["은하수와 사과 합병!", "3초 집밥 키트", "모 걸그룹 디스전...", "유한도전 다시 시작?", "올 겨울은 드레스 패딩 유행 예상"];
       const mouseTime = { 테크: 0, 식품: 0, 음악: 0, 방송: 0, 패션: 0 };
-      let mostViewed = 0;
+      let mostViewed = -1;
       let inTime = 0;
+      setInterval(() => {
+        let maxValue = -1;
+        let mostKey = -1;
+        for (const [key, value] of Object.entries(mouseTime)) {
+          if (value > maxValue) {
+            maxValue = value;
+            mostKey = key;
+          }
+        }
+
+        maxValue === 0 ? (mostViewed = -1) : (mostViewed = mostKey);
+      }, 800);
 
       class Post extends React.Component {
         constructor(props) {
@@ -122,30 +146,27 @@
           super(props);
 
           this.state = {
-            name: 0,
+            name: "미정",
+            nowAds: "",
           };
         }
 
-        findMostViewed() {
-          let maxValue;
-          let mostKey;
-          for (const [key, value] of Object.entries(mouseTime)) {
-            if (value > maxValue) {
-              maxValue = value;
-              mostKey = key;
-            }
-          }
-          return mostKey;
-        }
-
         componentDidMount() {
-          this.interval = setInterval(() => this.setState((state) => ({ name: this.findMostViewed() })), 2000);
+          this.interval = setInterval(
+            () => this.setState((state) => ({ name: mostViewed === -1 ? "미정" : mostViewed, nowAds: mostViewed === -1 ? "아직 데이터가 없습니다" : ads[postList.indexOf(mostViewed)] })),
+            1000
+          );
+        }
+        componentWillUnmount() {
+          clearInterval(this.interval);
         }
 
         render() {
           return (
             <React.Fragment>
-              <div>{this.findMostViewed()}</div>
+              <div>{this.state.name}</div>
+              <div id="divideBar">추천 광고</div>
+              <div>{this.state.nowAds}</div>
             </React.Fragment>
           );
         }
@@ -155,7 +176,7 @@
     <script type="text/babel">
       ReactDOM.render(
         <React.Fragment>
-          <Analysis countData={mouseTime} />
+          <Analysis info={mostViewed} />
         </React.Fragment>,
         document.querySelector("#analysis")
       );
