@@ -78,25 +78,22 @@
       class Analysis extends React.Component {
         constructor(props) {
           super(props);
-          props.text = this.state = {
-            info: 1,
+          this.state = {
+            name: props.thisName,
+            timeInfo: 0,
             appear: false,
           };
         }
         componentDidMount() {
-          this.setState((prevState) => {
-            console.log(prevState);
-            return {
-              info: prevState.info + 1,
-            };
-          });
+          this.interval = setInterval(() => this.setState((state) => ({ timeInfo: !mouseTime[`${state.name}`] ? 0 : mouseTime[`${state.name}`] })), 1000);
         }
 
         render() {
           return (
             <React.Fragment>
-              <div onClick={this.appearClick}>사용자 선호도 분석</div>
-              <div>{this.state.info}</div>
+              <div>
+                {this.state.name} : {this.state.timeInfo}
+              </div>
             </React.Fragment>
           );
         }
@@ -111,8 +108,17 @@
         document.querySelector("#root")
       );
     </script>
+
     <script type="text/babel">
-      ReactDOM.render(<Analysis text={mouseTime} />, document.querySelector("#analysis"));
+      ReactDOM.render(
+        <React.Fragment>
+          <div>사용자 선호도 분석</div>
+          {postList.map((v, i) => (
+            <Analysis thisName={v} key={i} />
+          ))}
+        </React.Fragment>,
+        document.querySelector("#analysis")
+      );
     </script>
   </body>
 </html>
