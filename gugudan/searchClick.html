@@ -43,7 +43,8 @@
     <script type="text/babel">
       const postList = ["테크", "식품", "음악", "방송", "패션"];
       const ads = ["은하수와 사과 합병!", "3초 집밥 키트", "모 걸그룹 디스전...", "유한도전 다시 시작?", "올 겨울은 드레스 패딩 유행 예상"];
-      const mouseTime = {};
+      const mouseTime = { 테크: 0, 식품: 0, 음악: 0, 방송: 0, 패션: 0 };
+      let mostViewed = 0;
       let inTime = 0;
 
       class Post extends React.Component {
@@ -53,16 +54,9 @@
           this.state = {
             title: props.thisTitle,
             index: props.thisIndex,
-            userClicked0: 0,
-            onMouseTime0: 0,
-            userClicked1: 0,
-            onMouseTime1: 0,
-            userClicked2: 0,
-            onMouseTime2: 0,
-            userClicked3: 0,
-            onMouseTime3: 0,
-            userClicked4: 0,
-            onMouseTime4: 0,
+
+            userClicked: 0,
+            onMouseTime: 0,
           };
         }
 
@@ -71,6 +65,7 @@
           this.setState((before, now) => ({
             userClicked: before.userClicked + 1,
           }));
+          mouseTime[`${this.state.title}`] = this.state.userClicked + this.state.onMouseTime;
         };
 
         onMouseOver = (e) => {
@@ -83,7 +78,9 @@
             onMouseTime: before.onMouseTime + (nowTime.getMinutes() - inTime.getMinutes()) * 60 + nowTime.getSeconds() - inTime.getSeconds(),
           }));
 
-          mouseTime[`${this.state.title}`] = this.state.onMouseTime;
+          setTimeout(() => {
+            mouseTime[`${this.state.title}`] = this.state.userClicked + this.state.onMouseTime;
+          }, 0);
         };
 
         render() {
@@ -93,7 +90,6 @@
                 <span onMouseOver={this.onMouseOver} onMouseOut={this.onMouseOut} onClick={this.onClick} id="postTitle">
                   {this.state.title}
                 </span>
-
                 <span id="postInfo">
                   클릭횟수 : {this.state.userClicked}
                   <br />
@@ -126,23 +122,30 @@
           super(props);
 
           this.state = {
-            name: props.thisName,
-            timeInfo: `${!mouseTime[`${props.thisName}`] ? 0 : mouseTime[`${props.thisName}`]}`,
-            clickInfo: 0,
-            appear: false,
+            name: 0,
           };
         }
 
-        // componentDidMount() {
-        //   this.interval = setInterval(() => this.setState((state) => ({ timeInfo: !mouseTime[`${state.name}`] ? 0 : mouseTime[`${state.name}`] })), 1000);
-        // }
+        findMostViewed() {
+          let maxValue;
+          let mostKey;
+          for (const [key, value] of Object.entries(mouseTime)) {
+            if (value > maxValue) {
+              maxValue = value;
+              mostKey = key;
+            }
+          }
+          return mostKey;
+        }
+
+        componentDidMount() {
+          this.interval = setInterval(() => this.setState((state) => ({ name: this.findMostViewed() })), 2000);
+        }
 
         render() {
           return (
             <React.Fragment>
-              <div>
-                {this.state.name} : {this.state.timeInfo}
-              </div>
+              <div>{this.findMostViewed()}</div>
             </React.Fragment>
           );
         }
@@ -152,9 +155,7 @@
     <script type="text/babel">
       ReactDOM.render(
         <React.Fragment>
-          {postList.map((v, i) => (
-            <Analysis thisName={v} key={i} time={`${!mouseTime[`${v}`] ? 0 : mouseTime[`${v}`]}`} />
-          ))}
+          <Analysis countData={mouseTime} />
         </React.Fragment>,
         document.querySelector("#analysis")
       );
