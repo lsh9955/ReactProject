@@ -3,6 +3,7 @@ import ShowWord from "./ShowWord";
 
 const SearchBoard = () => {
   const [value, setValue] = useState("");
+
   return (
     <>
       <form>

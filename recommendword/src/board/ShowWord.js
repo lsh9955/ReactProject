@@ -1,6 +1,8 @@
 import { React, useState } from "react";
+import Map from "./Map";
 
 const ShowWord = ({ nowValue }) => {
+  const [placevalue, setPlaceValue] = useState("");
   const recommendWords = [
     ["서울특별시", "종로구"],
     ["서울특별시", "중구"],
@@ -254,25 +256,36 @@ const ShowWord = ({ nowValue }) => {
     };
   }
 
+  let placeClick = (e) => {
+    setPlaceValue(e.target.lastChild.data);
+  };
+
   function findWords(target) {
     if (getConstantVowel(target).f !== undefined && getConstantVowel(target).s === undefined && getConstantVowel(target).t === undefined) {
       return recommendWords.map((v, i) => v[1]).filter((k) => getConstantVowel(k).f === getConstantVowel(target).f);
-    } else if (getConstantVowel(target).f !== undefined && getConstantVowel(target).s !== undefined && getConstantVowel(target).t === undefined) {
+    } else if (getConstantVowel(target).f !== undefined && getConstantVowel(target).s !== undefined && getConstantVowel(target).t === undefined && target.length === 1) {
       return recommendWords.map((v, i) => v[1]).filter((k) => getConstantVowel(k).f === getConstantVowel(target).f && getConstantVowel(k).s === getConstantVowel(target).s);
-    } else if (getConstantVowel(target).f !== undefined && getConstantVowel(target).s !== undefined && getConstantVowel(target).t !== undefined) {
+    } else if (getConstantVowel(target).f !== undefined && getConstantVowel(target).s !== undefined && getConstantVowel(target).t !== undefined && target.length === 1) {
       return recommendWords
         .filter((k) => getConstantVowel(k[1]).f === getConstantVowel(target).f && getConstantVowel(k[1]).s === getConstantVowel(target).s && getConstantVowel(k[1]).t === getConstantVowel(target).t)
         .map((v, i) => (
-          <div>
+          <div key={v[1] + v[0]} onClick={placeClick}>
+            {v[0]}-{v[1]}
+          </div>
+        ));
+    } else if (target.length >= 2) {
+      return recommendWords
+        .filter((k) => k[1].slice(0, target.length) === target)
+        .map((v, i) => (
+          <div key={v[1] + v[0]} onClick={placeClick}>
             {v[0]}-{v[1]}
           </div>
         ));
     }
   }
-  console.log(getConstantVowel(nowValue).f);
-
   return (
     <>
+      <Map thisPlace={placevalue} />
       <div>{findWords(nowValue)}</div>
     </>
   );
