@@ -257,6 +257,7 @@ const ShowWord = ({ nowValue }) => {
   }
 
   let placeClick = (e) => {
+    console.log(e.target.lastChild.data);
     setPlaceValue(e.target.lastChild.data);
   };
 
