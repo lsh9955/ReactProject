@@ -1,6 +1,7 @@
 import "./App.css";
 import SearchBoard from "./board/SearchBoard";
 import logo from "../src/board/logoImg.svg";
+
 function App() {
   return (
     <>

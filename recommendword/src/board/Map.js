@@ -2,7 +2,6 @@
 import React, { useEffect } from "react";
 
 const Map = ({ thisPlace }) => {
-  console.log(thisPlace);
   useEffect(() => {
     var infowindow = new kakao.maps.InfoWindow({ zIndex: 1 });
 
@@ -19,7 +18,7 @@ const Map = ({ thisPlace }) => {
     var ps = new kakao.maps.services.Places();
 
     // 키워드로 장소를 검색합니다
-    ps.keywordSearch(`${thisPlace}`, placesSearchCB);
+    ps.keywordSearch(`${thisPlace === "" ? "서울시" : thisPlace}`, placesSearchCB);
 
     // 키워드 검색 완료 시 호출되는 콜백함수 입니다
     function placesSearchCB(data, status, pagination) {

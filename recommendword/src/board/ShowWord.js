@@ -1,8 +1,10 @@
 import { React, useState } from "react";
+import Food from "./Food";
 import Map from "./Map";
 
 const ShowWord = ({ nowValue }) => {
   const [placevalue, setPlaceValue] = useState("");
+  const [foodValue, setFoodValue] = useState("성남시");
   const recommendWords = [
     ["서울특별시", "종로구"],
     ["서울특별시", "중구"],
@@ -257,8 +259,11 @@ const ShowWord = ({ nowValue }) => {
   }
 
   let placeClick = (e) => {
-    console.log(e.target.lastChild.data);
-    setPlaceValue(e.target.lastChild.data);
+    console.log(e.target.innerText);
+
+    // setPlaceValue(e.target.lastChild.data);
+    setPlaceValue(e.target.innerText);
+    setFoodValue(e.target.lastChild.data);
   };
 
   function findWords(target) {
@@ -288,6 +293,10 @@ const ShowWord = ({ nowValue }) => {
     <>
       <Map thisPlace={placevalue} />
       <div>{findWords(nowValue)}</div>
+      <div>
+        <hr></hr>
+      </div>
+      <Food thisPlace={foodValue} />
     </>
   );
 };
