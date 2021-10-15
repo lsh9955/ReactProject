@@ -17,7 +17,7 @@ const Food = ({ thisPlace }) => {
         setFoodData(foodIndex);
         console.log(foodData);
       }),
-    thisPlace
+    [thisPlace]
   );
 
   //   if (isLoading) {
