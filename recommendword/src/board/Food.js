@@ -12,7 +12,7 @@ const Food = ({ thisPlace }) => {
     () =>
       axios.get(url).then((response) => {
         const data = response.data;
-        let foodIndex = data["PlaceThatDoATasteyFoodSt"] === undefined ? "" : data.PlaceThatDoATasteyFoodSt[1].row.map((v, i) => <div>{v["RESTRT_NM"]}</div>);
+        let foodIndex = data["PlaceThatDoATasteyFoodSt"] === undefined ? "경기도가 아닙니다" : data.PlaceThatDoATasteyFoodSt[1].row.map((v, i) => <div>{v["RESTRT_NM"]}</div>);
         setIsLoading(true);
         setFoodData(foodIndex);
         console.log(foodData);
@@ -33,7 +33,7 @@ const Food = ({ thisPlace }) => {
 
   return (
     <>
-      <div>{thisPlace}</div>
+      <div>{thisPlace} 맛집</div>
       <div>{foodData}</div>
     </>
   );
