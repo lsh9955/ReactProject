@@ -259,27 +259,15 @@ const ShowWord = ({ nowValue }) => {
   }
 
   let placeClick = (e) => {
-    console.log(e.target.innerText);
-
     // setPlaceValue(e.target.lastChild.data);
     setPlaceValue(e.target.innerText);
     setFoodValue(e.target.lastChild.data);
   };
 
   function findWords(target) {
-    if (getConstantVowel(target).f !== undefined && getConstantVowel(target).s === undefined && getConstantVowel(target).t === undefined) {
-      return recommendWords.map((v, i) => v[1]).filter((k) => getConstantVowel(k).f === getConstantVowel(target).f);
-    } else if (getConstantVowel(target).f !== undefined && getConstantVowel(target).s !== undefined && getConstantVowel(target).t === undefined && target.length === 1) {
-      return recommendWords.map((v, i) => v[1]).filter((k) => getConstantVowel(k).f === getConstantVowel(target).f && getConstantVowel(k).s === getConstantVowel(target).s);
-    } else if (getConstantVowel(target).f !== undefined && getConstantVowel(target).s !== undefined && getConstantVowel(target).t !== undefined && target.length === 1) {
-      return recommendWords
-        .filter((k) => getConstantVowel(k[1]).f === getConstantVowel(target).f && getConstantVowel(k[1]).s === getConstantVowel(target).s && getConstantVowel(k[1]).t === getConstantVowel(target).t)
-        .map((v, i) => (
-          <div key={v[1] + v[0]} onClick={placeClick}>
-            {v[0]}-{v[1]}
-          </div>
-        ));
-    } else if (target.length >= 2) {
+    if (target.length === 0) {
+      return "";
+    } else {
       return recommendWords
         .filter((k) => k[1].slice(0, target.length) === target)
         .map((v, i) => (
@@ -289,11 +277,37 @@ const ShowWord = ({ nowValue }) => {
         ));
     }
   }
+
+  function findSimilar(inputWord) {
+    let answer = "";
+
+    for (let i = 0; i < recommendWords.length; i++) {
+      if (getConstantVowel(inputWord[0]).f === getConstantVowel(recommendWords[i][1][0]).f && getConstantVowel(inputWord[1]).f === getConstantVowel(recommendWords[i][1][1]).f) {
+        answer = `${recommendWords[i][1]}`;
+        return answer;
+      }
+    }
+  }
+  function SimilarClick(e) {
+    console.log(e.target.innerText);
+    console.log(findSimilar(nowValue));
+    setPlaceValue(findSimilar(nowValue));
+    setFoodValue(findSimilar(nowValue));
+  }
+
   return (
     <>
       <Map thisPlace={placevalue} />
       <div>{findWords(nowValue)}</div>
       <div>
+        {findWords(nowValue) == "" && nowValue.length >= 2 ? (
+          <>
+            <hr></hr>
+            <div onClick={SimilarClick}>{findSimilar(nowValue) !== undefined ? `찾으시는 단어가 없으신가요? 혹시 ` + findSimilar(nowValue) + ` 인가요?` : ""}</div>
+          </>
+        ) : (
+          ""
+        )}
         <hr></hr>
       </div>
       <Food thisPlace={foodValue} />
